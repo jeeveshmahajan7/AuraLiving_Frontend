@@ -1,0 +1,196 @@
+@font-face {
+  font-family: "Saans";
+  src: url("/fonts/saans-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Saans Mono";
+  src: url("/fonts/saans-mono-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+
+#root {
+  --aura-cork: #3d241b;
+  --dark-aura-cork: #331e17;
+  --aura-orange: #ef8d68;
+  --aura-spring-wood: #f2f0e6;
+}
+
+body {
+  color: var(--aura-cork);
+  font-family: "JetBrains Mono", monospace;
+  -webkit-text-stroke: 0.5px currentColor;
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  -webkit-text-stroke: 1px currentColor;
+}
+
+/* primary button */
+.btn-custom {
+  background-color: var(--aura-orange);
+  color: var(--aura-cork);
+  border-color: var(--aura-cork);
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+.btn-custom:hover {
+  background-color: var(--aura-cork);
+  color: var(--aura-orange);
+  border-color: var(--aura-cork);
+}
+
+/* secondary button */
+
+.btn-second-custom {
+  background-color: var(--aura-spring-wood);
+  color: var(--aura-cork);
+  border-color: var(--aura-spring-wood);
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+.btn-second-custom:hover {
+  background-color: var(--aura-orange);
+  color: var(--aura-cork);
+  border-color: var(--aura-orange);
+}
+
+/* banner above navbar */
+.shipping-banner {
+  background-color: var(--aura-cork);
+  color: var(--aura-orange);
+}
+
+.card-products {
+  height: 100%; /* Make card fill the full column height */
+}
+
+.card-body {
+  flex-grow: 1; /* So that the body takes up remaining space in the card */
+}
+
+.card-text {
+  color: var(--aura-spring-wood);
+}
+
+.card-img {
+  width: 100%;
+  aspect-ratio: 3/4;
+}
+
+/* On product details page, the product image should not exceed 80% of the viewport height available */
+.custom-height {
+  max-height: 80vh;
+}
+
+/* To make the product details section visible in the view */
+.product-details-left {
+  max-height: 100vh;
+  overflow: hidden;
+}
+
+.accordion-button:focus,
+.accordion-button:not(.collapsed) {
+  background-color: var(--aura-orange);
+  color: var(--aura-cork);
+  box-shadow: none;
+}
+
+input[type="checkbox"].form-check-input:checked {
+  background-color: var(--aura-cork) !important;
+  border-color: var(--aura-cork) !important;
+  box-shadow: none !important;
+}
+
+input[type="radio"].form-check-input:checked {
+  accent-color: var(--aura-cork) !important;
+  background-color: var(--aura-cork) !important;
+  border-color: var(--aura-cork) !important;
+  box-shadow: none !important;
+}
+
+input[type="radio"].form-check-input:focus,
+input[type="radio"].form-check-input:active {
+  box-shadow: none !important;
+  outline: none !important;
+  border: 4.5px solid var(--aura-cork); /* Keep thickness on focus too */
+}
+
+input[type="radio"].form-check-input {
+  accent-color: var(--aura-cork);
+}
+
+/* thumb color */
+input[type="range"]::-webkit-slider-thumb {
+  background-color: var(--aura-cork);
+  border: none;
+  box-shadow: none;
+}
+
+/* Remove blue glow while dragging (focus/active) */
+input[type="range"]:focus::-webkit-slider-thumb,
+input[type="range"]:active::-webkit-slider-thumb {
+  background-color: var(--aura-cork);
+  box-shadow: none;
+  outline: none;
+}
+
+/* track color */
+input[type="range"]::-webkit-slider-runnable-track {
+  background-color: var(--aura-spring-wood);
+}
+
+/* full support for modern browsers */
+input[type="range"] {
+  accent-color: var(--aura-cork);
+}
+
+/* to remove chevron from filters button */
+.no-chevron::after {
+  display: none !important;
+}
+
+/* to make price text light */
+.text-lighter {
+  color: #bbb;
+}
+
+/* to add an overlay on card image to make text over it visible */
+.image-overlay {
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 1;
+}
+
+/* to keep the text on top so that the image overlay sits behind it making it clearly visible */
+.text-on-top {
+  z-index: 2;
+}
+
+/* favorite button */
+.favorite-btn {
+  background-color: white;
+  border-radius: 50%;
+  padding: 6px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease-in-out;
+}
+
+.favorite-btn:hover {
+  transform: scale(1.1);
+}
+
+.favorite-btn:focus {
+  outline: none;
+}
