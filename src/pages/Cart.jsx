@@ -19,28 +19,30 @@ const Cart = () => {
 
   // local state to store full products data for rendering
   const [cartItemsData, setCartItemsData] = useState([]);
-  const [cartLoading, setCartLoading] = useState(true);
 
   useEffect(() => {
     if (data?.cart) {
-      setLocalCartItems(data.cart.map((item) => item.product._id));
+      setLocalCartItems(
+        Object.fromEntries(
+          data.cart.map((item) => [item.product._id, item.quantity])
+        )
+      );
       setCartItemsData(data.cart);
-      setCartLoading(false); // ✅ stop loading after cart data is set
     }
   }, [data, setLocalCartItems]);
 
   if (error) return <p>An error occured.</p>;
 
-  if (loading || cartLoading) {
+  if (loading) {
     return <div>Loading cart...</div>;
   }
 
   // filter cart items for instant load after cart items change
   const filteredCartItems = cartItemsData.filter(
-    (item) => item.product._id in localCartItems
+    (item) => localCartItems[item.product._id] > 0
   );
 
-  if (filteredCartItems.length === 0) {
+  if (!loading && filteredCartItems.length === 0) {
     return <p>Your cart is empty.</p>;
   }
 
@@ -97,7 +99,16 @@ const Cart = () => {
       <Header />
       <main className="container">
         <h1 className="display-6 py-5">My Cart</h1>
-        <div className="row">{cartListing}</div>
+
+        {error && <p>An error occurred.</p>}
+
+        {loading ? (
+          <div>Loading Cart...</div>
+        ) : filteredCartItems.length === 0 && loading === false ? (
+          <p>Your cart is empty.</p>
+        ) : (
+          <div className="row">{cartListing}</div>
+        )}
       </main>
     </>
   );
