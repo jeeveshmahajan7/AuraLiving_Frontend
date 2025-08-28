@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useContext } from "react";
 
-import Header from "../components/Header";
 import ProductsList from "../components/ProductsList";
 import ProductsFilterContent from "../components/ProductsFilterContent";
 import ProductsSort from "../components/ProductsSort";
@@ -13,7 +12,6 @@ const ProductsListing = () => {
 
   return (
     <>
-      <Header />
       <main className="container">
         <div className="row py-5">
           <div className="col-md-3">
@@ -79,7 +77,7 @@ const ProductsListing = () => {
               </div>
             </div>
           </div>
- 
+
           <div className="col-md-9">
             <div className="d-flex justify-content-center d-block d-md-none mb-3">
               {/* to show products count on small screens */}

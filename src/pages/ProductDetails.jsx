@@ -3,8 +3,6 @@ import useFetch from "../../useFetch";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-import Header from "../components/Header";
-
 const ProductDetails = () => {
   const { productId } = useParams();
   const { data, loading, error } = useFetch(
@@ -34,7 +32,6 @@ const ProductDetails = () => {
 
   return (
     <>
-      <Header />
       <div className="container">
         <hr />
         <div className="row">

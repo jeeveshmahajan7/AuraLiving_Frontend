@@ -52,7 +52,7 @@ const useCart = () => {
         const qty = (prev[productId] || 0) - 1;
 
         if (qty <= 0) {
-          const copy = [...prev];
+          const copy = {...prev};
           delete copy[productId];
           return copy;
         }
@@ -77,12 +77,11 @@ const useCart = () => {
 
     try {
       const res = await fetch(
-        `${API}/users/${userId}/cart/${productId}/${removeAll}`,
+        `${API}/users/${userId}/cart/${productId}${
+          removeAll ? "?all=true" : ""
+        }`,
         {
           method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
         }
       );
 

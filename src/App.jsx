@@ -10,6 +10,7 @@ import ProductDetails from "./pages/ProductDetails";
 import ProductsContext from "./contexts/ProductsContext";
 import Favorites from "./pages/Favorites";
 import Cart from "./pages/Cart";
+import Header from "./components/Header";
 
 function App() {
   const [priceUpperLimit, setPriceUpperLimit] = useState(10000);
@@ -44,6 +45,7 @@ function App() {
       }}
     >
       <Router>
+        <Header />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<ProductsListing />} />

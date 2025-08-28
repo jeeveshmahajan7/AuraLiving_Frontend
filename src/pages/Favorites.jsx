@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 
-import Header from "../components/Header";
 import useFetch from "../../useFetch";
 import FavoriteButton from "../components/FavoriteButton";
 import ProductsContext from "../contexts/ProductsContext";
@@ -71,7 +70,9 @@ const Favorites = () => {
           <div className="card-body">
             <h6>{product.title}</h6>
             <p>₹ {product.price}</p>
-            <button htmlFor="" className="btn btn-custom">Add to Cart</button>
+            <button htmlFor="" className="btn btn-custom">
+              Add to Cart
+            </button>
           </div>
         </div>
       </Link>
@@ -80,7 +81,6 @@ const Favorites = () => {
 
   return (
     <>
-      <Header />
       <main className="container">
         <h1 className="display-6 py-5">My Wishlist</h1>
         <div className="row">{favoritesListing}</div>
