@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import useFetch from "../../useFetch";
 import useCart from "../Hooks/useCart";
 
-import Header from "../components/Header";
 import ProductsContext from "../contexts/ProductsContext";
 
 const Cart = () => {
@@ -17,8 +16,7 @@ const Cart = () => {
 
   const { addToCart, removeFromCart } = useCart();
 
-  // local state to store full products data for rendering
-  const [cartItemsData, setCartItemsData] = useState([]);
+  const [hydrated, setHydrated] = useState(false); // tracks if the cart items is populated from the backend
 
   useEffect(() => {
     if (data?.cart) {
@@ -27,88 +25,131 @@ const Cart = () => {
           data.cart.map((item) => [item.product._id, item.quantity])
         )
       );
-      setCartItemsData(data.cart);
+      setHydrated(true); // we have backend data now
     }
   }, [data, setLocalCartItems]);
 
   if (error) return <p>An error occured.</p>;
 
-  if (loading) {
+  if (loading && !hydrated) {
     return <div>Loading cart...</div>;
   }
 
-  // filter cart items for instant load after cart items change
-  const filteredCartItems = cartItemsData.filter(
-    (item) => localCartItems[item.product._id] > 0
-  );
+  const filteredCartItems =
+    data?.cart?.filter((item) => localCartItems[item.product._id] > 0) || [];
 
-  if (!loading && filteredCartItems.length === 0) {
+  if (hydrated && filteredCartItems.length === 0) {
     return <p>Your cart is empty.</p>;
   }
 
-  const cartListing = filteredCartItems.map((cartItem) => (
-    <div key={cartItem.product._id} className="col-md-3 mb-4">
-      <Link
-        className="text-decoration-none"
-        to={`/products/details/${cartItem.product._id}`}
-      >
-        <div className="card card-products mb-3">
-          <img
-            className="card-img-top img-fluid card-img object-fit-cover"
-            src={`${cartItem.product.imgUrl}`}
-            alt={`${cartItem.product.title} image.`}
-          />
+  const totalCartPrice = filteredCartItems.reduce(
+    (acc, curr) =>
+      Math.round(acc + curr.product.price * localCartItems[curr.product._id]),
+    0
+  );
 
-          <div className="card-body">
-            <h6>{cartItem.product.title}</h6>
-            <p>₹ {cartItem.product.price}</p>
-            <p>Quantity: {cartItem.quantity}</p>
-            <div className="pb-2 pt-0">
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  addToCart(cartItem.product._id);
-                }}
-                className="btn-custom"
-              >
-                +
-              </button>{" "}
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  removeFromCart(cartItem.product._id);
-                }}
-                className="btn-custom"
-              >
-                -
-              </button>
+  const totalCartDiscount = filteredCartItems.reduce(
+    (acc, curr) =>
+      Math.round(
+        acc + curr.product.discountPercent * localCartItems[curr.product._id]
+      ),
+    0
+  );
+
+  const cartAmountAfterDiscount = totalCartPrice - totalCartDiscount;
+
+  const deliveryCarges = cartAmountAfterDiscount > 499 ? 0 : 199;
+
+  const finalOrderAmount = cartAmountAfterDiscount + deliveryCarges;
+
+  const cartListing = filteredCartItems.map((cartItem) => {
+    const currentQty = localCartItems[cartItem.product._id] || 0;
+    return (
+      <div key={cartItem.product._id} className="mb-4">
+        <Link
+          className="text-decoration-none"
+          to={`/products/details/${cartItem.product._id}`}
+        >
+          <div className="card card-products">
+            <div className="row g-0">
+              <div className="col-md-4">
+                <img
+                  className="img-fluid rounded-start card-img object-fit-cover"
+                  src={`${cartItem.product.imgUrl}`}
+                  alt={`${cartItem.product.title} image.`}
+                />
+              </div>
+              <div className="col-md-8">
+                <div className="card-body">
+                  <h6>{cartItem.product.title}</h6>
+                  <p>₹ {cartItem.product.price}</p>
+                  <div className="pb-2 pt-0">
+                    <span>Quantity:</span>{" "}
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        addToCart(cartItem.product._id);
+                      }}
+                      className="btn-custom"
+                    >
+                      +
+                    </button>{" "}
+                    {currentQty}{" "}
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        removeFromCart(cartItem.product._id);
+                      }}
+                      className="btn-custom"
+                    >
+                      -
+                    </button>
+                  </div>
+                  <button htmlFor="" className="btn btn-second-custom w-100">
+                    Move to Favorites
+                  </button>
+                </div>
+              </div>
             </div>
-            <button htmlFor="" className="btn btn-second-custom w-100">
-              Move to Favorites
-            </button>
           </div>
-        </div>
-      </Link>
-    </div>
-  ));
+        </Link>
+      </div>
+    );
+  });
 
   return (
     <>
-      <Header />
       <main className="container">
         <h1 className="display-6 py-5">My Cart</h1>
 
         {error && <p>An error occurred.</p>}
 
-        {loading ? (
-          <div>Loading Cart...</div>
-        ) : filteredCartItems.length === 0 && loading === false ? (
-          <p>Your cart is empty.</p>
-        ) : (
-          <div className="row">{cartListing}</div>
-        )}
+        <div className="row">
+          <div className="col-md-6">
+            <div className="row">{cartListing}</div>
+          </div>
+          <div className="col-md-6">
+            <div className="card px-3 py-4 shadow-sm">
+              <h4>CART SUMMARY</h4>
+              <hr />
+              <p>Items: {filteredCartItems.length}</p>
+              <p>Price: ₹{totalCartPrice}</p>
+              <p>
+                Discount: {totalCartDiscount > 0 ? "-" : ""}₹{totalCartDiscount}
+              </p>
+              <p>Delivery Charges: ₹{deliveryCarges}</p>
+              <hr className="mt-0" />
+              <p className="fw-bold">FINAL AMOUNT: ₹{finalOrderAmount}</p>
+              <hr className="mt-0" />
+              <p>You will save ₹{totalCartDiscount} on this order</p>
+              <button className="btn btn-custom w-100">
+                Proceed to Checkout
+              </button>
+            </div>
+          </div>
+        </div>
       </main>
     </>
   );
