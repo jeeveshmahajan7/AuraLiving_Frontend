@@ -1,13 +1,22 @@
 import { useParams } from "react-router-dom";
+import { useEffect, useState, useContext } from "react";
+
 import useFetch from "../../useFetch";
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import useCart from "../Hooks/useCart";
+import useFavorites from "../Hooks/useFavorites";
+import ProductsContext from "../contexts/ProductsContext";
+
+import FavoriteButton from "../components/FavoriteButton";
 
 const ProductDetails = () => {
   const { productId } = useParams();
   const { data, loading, error } = useFetch(
     `https://aura-living-backend.vercel.app/products/details/${productId}`
   );
+
+  const { addToCart } = useCart();
+  const { toggleFavorite } = useFavorites();
+  const { localFavoriteIds } = useContext(ProductsContext);
 
   const [product, setProduct] = useState(null);
   const [discountedPrice, setDiscountedPrice] = useState(null);
@@ -51,11 +60,16 @@ const ProductDetails = () => {
                   % off
                 </span>
               </p>
-              <Link className="btn btn-custom w-100 my-2">ORDER NOW</Link>{" "}
-              <br />
-              <Link className="btn btn-second-custom w-100 my-2">
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  addToCart(product._id);
+                }}
+                className="btn btn-custom w-100 my-2"
+              >
                 ADD TO CART
-              </Link>
+              </button>
             </div>
             <div>
               <p className="display-6">Description</p>
@@ -69,11 +83,23 @@ const ProductDetails = () => {
 
           <div className="col-md-6 order-1 order-md-2">
             <div className="card">
-              <img
-                className="card-img-top img-fluid card-img object-fit-cover custom-height"
-                src={`${product.imgUrl}`}
-                alt={`${product.title} image.`}
-              />
+              <div className="position-relative">
+                <div className="position-absolute top-0 end-0 m-2">
+                  <FavoriteButton
+                    isInitiallyFavorite={
+                      localFavoriteIds.includes(product._id) ? true : false
+                    }
+                    productId={product._id}
+                    onToggle={() => toggleFavorite(product._id)}
+                  />
+                </div>
+
+                <img
+                  className="card-img-top img-fluid card-img object-fit-cover custom-height"
+                  src={`${product.imgUrl}`}
+                  alt={`${product.title} image.`}
+                />
+              </div>
             </div>
           </div>
         </div>

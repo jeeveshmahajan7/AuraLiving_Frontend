@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 
-import useFetch from "../../useFetch";
-import FavoriteButton from "../components/FavoriteButton";
 import ProductsContext from "../contexts/ProductsContext";
 import useFavorites from "../Hooks/useFavorites";
+import useFetch from "../../useFetch";
+import useCart from "../Hooks/useCart";
+
+import FavoriteButton from "../components/FavoriteButton";
 
 const Favorites = () => {
   const { userId, localFavoriteIds, setLocalFavoriteIds } =
@@ -14,6 +16,8 @@ const Favorites = () => {
   const { data, error } = useFetch(
     `https://aura-living-backend.vercel.app/users/${userId}/favorites`
   );
+
+  const { addToCart } = useCart();
 
   // Local state to store full favorite products data
   const [favoriteProductsData, setFavoriteProductsData] = useState(null);
@@ -28,7 +32,7 @@ const Favorites = () => {
 
   // While favoriteProductsData is null, data not yet loaded
   if (favoriteProductsData === null) {
-    return <p>Loading...</p>;
+    return <p>Loading favorites...</p>;
   }
 
   // If fetch hook reports error
@@ -70,7 +74,14 @@ const Favorites = () => {
           <div className="card-body">
             <h6>{product.title}</h6>
             <p>₹ {product.price}</p>
-            <button htmlFor="" className="btn btn-custom">
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                addToCart(product._id);
+              }}
+              className="btn btn-custom"
+            >
               Add to Cart
             </button>
           </div>
