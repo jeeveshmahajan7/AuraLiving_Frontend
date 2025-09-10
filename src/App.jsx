@@ -11,6 +11,7 @@ import ProductsContext from "./contexts/ProductsContext";
 import Favorites from "./pages/Favorites";
 import Cart from "./pages/Cart";
 import Header from "./components/Header";
+import CheckoutPage from "./pages/CheckoutPage";
 
 function App() {
   const [priceUpperLimit, setPriceUpperLimit] = useState(10000);
@@ -20,6 +21,7 @@ function App() {
   const [sortingRule, setSortingRule] = useState("");
   const [localFavoriteIds, setLocalFavoriteIds] = useState([]); // to store favorite products locally for instant UI changes
   const [localCartItems, setLocalCartItems] = useState({}); // to store cart items locally for instant UI changes
+  const [cartDetails, setCartDetails] = useState({}); // final cart details for placing order
   const userId = "6891b0f229130a83422d47db";
   const API = "https://aura-living-backend.vercel.app";
 
@@ -35,6 +37,7 @@ function App() {
         setSortingRule,
         setLocalFavoriteIds,
         setLocalCartItems,
+        setCartDetails,
         priceUpperLimit,
         selectedCategories,
         minimumRating,
@@ -42,6 +45,7 @@ function App() {
         sortingRule,
         localFavoriteIds,
         localCartItems,
+        cartDetails,
       }}
     >
       <Router>
@@ -56,6 +60,7 @@ function App() {
           />
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
         </Routes>
       </Router>
     </ProductsContext.Provider>

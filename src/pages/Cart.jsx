@@ -7,8 +7,13 @@ import useCart from "../Hooks/useCart";
 import ProductsContext from "../contexts/ProductsContext";
 
 const Cart = () => {
-  const { userId, localCartItems, setLocalCartItems } =
-    useContext(ProductsContext);
+  const {
+    userId,
+    localCartItems,
+    setLocalCartItems,
+    cartDetails,
+    setCartDetails,
+  } = useContext(ProductsContext);
 
   const { data, loading, error } = useFetch(
     `https://aura-living-backend.vercel.app/users/${userId}/cart`
@@ -27,7 +32,46 @@ const Cart = () => {
       );
       setHydrated(true); // we have backend data now
     }
-  }, [data, setLocalCartItems]);
+  }, [data]);
+
+  const filteredCartItems = data?.cart || [];
+
+  useEffect(() => {
+    if (!filteredCartItems.length) {
+      setCartDetails(null);
+      return;
+    }
+
+    const totalCartPrice = filteredCartItems.reduce(
+      (acc, curr) =>
+        Math.round(
+          acc + curr.product.price * localCartItems[curr.product._id] || 0
+        ),
+      0
+    );
+
+    const totalCartDiscount = filteredCartItems.reduce(
+      (acc, curr) =>
+        Math.round(
+          acc +
+            curr.product.discountPercent * localCartItems[curr.product._id] || 0
+        ),
+      0
+    );
+
+    const cartAmountAfterDiscount = totalCartPrice - totalCartDiscount;
+    const deliveryCarges = cartAmountAfterDiscount > 499 ? 0 : 199;
+    const finalOrderAmount = cartAmountAfterDiscount + deliveryCarges;
+
+    setCartDetails({
+      cartItems: filteredCartItems,
+      totalCartPrice,
+      totalCartDiscount,
+      cartAmountAfterDiscount,
+      deliveryCarges,
+      finalOrderAmount,
+    });
+  }, [filteredCartItems]);
 
   if (error) return <p>An error occured.</p>;
 
@@ -35,61 +79,38 @@ const Cart = () => {
     return <div>Loading cart...</div>;
   }
 
-  const filteredCartItems =
-    data?.cart?.filter((item) => localCartItems[item.product._id] > 0) || [];
-
   if (hydrated && filteredCartItems.length === 0) {
     return <p>Your cart is empty.</p>;
   }
 
-  const totalCartPrice = filteredCartItems.reduce(
-    (acc, curr) =>
-      Math.round(acc + curr.product.price * localCartItems[curr.product._id]),
-    0
-  );
-
-  const totalCartDiscount = filteredCartItems.reduce(
-    (acc, curr) =>
-      Math.round(
-        acc + curr.product.discountPercent * localCartItems[curr.product._id]
-      ),
-    0
-  );
-
-  const cartAmountAfterDiscount = totalCartPrice - totalCartDiscount;
-
-  const deliveryCarges = cartAmountAfterDiscount > 499 ? 0 : 199;
-
-  const finalOrderAmount = cartAmountAfterDiscount + deliveryCarges;
-
-  const cartListing = filteredCartItems.map((cartItem) => {
-    const currentQty = localCartItems[cartItem.product._id] || 0;
+  const cartListing = filteredCartItems.map((item) => {
+    const currentQty = localCartItems[item.product._id] || 0;
     return (
-      <div key={cartItem.product._id} className="mb-4">
+      <div key={item.product._id} className="mb-4">
         <Link
           className="text-decoration-none"
-          to={`/products/details/${cartItem.product._id}`}
+          to={`/products/details/${item.product._id}`}
         >
           <div className="card card-products">
             <div className="row g-0">
               <div className="col-md-4">
                 <img
                   className="img-fluid rounded-start card-img object-fit-cover"
-                  src={`${cartItem.product.imgUrl}`}
-                  alt={`${cartItem.product.title} image.`}
+                  src={`${item.product.imgUrl}`}
+                  alt={`${item.product.title} image.`}
                 />
               </div>
               <div className="col-md-8">
                 <div className="card-body">
-                  <h6>{cartItem.product.title}</h6>
-                  <p>₹ {cartItem.product.price}</p>
+                  <h6>{item.product.title}</h6>
+                  <p>₹ {item.product.price}</p>
                   <div className="pb-2 pt-0">
                     <span>Quantity:</span>{" "}
                     <button
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        addToCart(cartItem.product._id);
+                        addToCart(item.product._id);
                       }}
                       className="btn-custom"
                     >
@@ -100,7 +121,7 @@ const Cart = () => {
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        removeFromCart(cartItem.product._id);
+                        removeFromCart(item.product._id);
                       }}
                       className="btn-custom"
                     >
@@ -134,19 +155,30 @@ const Cart = () => {
             <div className="card px-3 py-4 shadow-sm">
               <h4>CART SUMMARY</h4>
               <hr />
-              <p>Items: {filteredCartItems.length}</p>
-              <p>Price: ₹{totalCartPrice}</p>
-              <p>
-                Discount: {totalCartDiscount > 0 ? "-" : ""}₹{totalCartDiscount}
-              </p>
-              <p>Delivery Charges: ₹{deliveryCarges}</p>
-              <hr className="mt-0" />
-              <p className="fw-bold">FINAL AMOUNT: ₹{finalOrderAmount}</p>
-              <hr className="mt-0" />
-              <p>You will save ₹{totalCartDiscount} on this order</p>
-              <button className="btn btn-custom w-100">
-                Proceed to Checkout
-              </button>
+              {cartDetails ? (
+                <>
+                  <p>Items: {filteredCartItems.length}</p>
+                  <p>Price: ₹{cartDetails.totalCartPrice}</p>
+                  <p>
+                    Discount: {cartDetails.totalCartDiscount > 0 ? "-" : ""}₹
+                    {cartDetails.totalCartDiscount}
+                  </p>
+                  <p>Delivery Charges: ₹{cartDetails.deliveryCarges}</p>
+                  <hr className="mt-0" />
+                  <p className="fw-bold">
+                    FINAL AMOUNT: ₹{cartDetails.finalOrderAmount}
+                  </p>
+                  <hr className="mt-0" />
+                  <p>
+                    You will save ₹{cartDetails.totalCartDiscount} on this order
+                  </p>
+                  <Link to="/checkout" className="btn btn-custom w-100">
+                    Proceed to Checkout
+                  </Link>
+                </>
+              ) : (
+                <p>Your cart is empty.</p>
+              )}
             </div>
           </div>
         </div>
