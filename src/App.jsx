@@ -12,6 +12,7 @@ import Favorites from "./pages/Favorites";
 import Cart from "./pages/Cart";
 import Header from "./components/Header";
 import CheckoutPage from "./pages/CheckoutPage";
+import Orders from "./pages/Orders";
 
 function App() {
   const [priceUpperLimit, setPriceUpperLimit] = useState(10000);
@@ -61,6 +62,7 @@ function App() {
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/orders" element={<Orders />} />
         </Routes>
       </Router>
     </ProductsContext.Provider>

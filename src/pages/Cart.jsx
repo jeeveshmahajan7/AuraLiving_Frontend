@@ -88,10 +88,6 @@ const Cart = () => {
     return <div>Loading cart...</div>;
   }
 
-  if (hydrated && filteredCartItems.length === 0) {
-    return <p>Your cart is empty.</p>;
-  }
-
   const cartListing = filteredCartItems.map((item) => {
     const currentQty = localCartItems[item.product._id] || 0;
     return (
@@ -152,45 +148,60 @@ const Cart = () => {
   return (
     <>
       <main className="container">
-        <h1 className="display-6 py-5">My Cart</h1>
-
-        {error && <p>An error occurred.</p>}
-
         <div className="row">
           <div className="col-md-6">
-            <div className="row">{cartListing}</div>
+            <h1 className="display-6 py-5">My Cart</h1>
           </div>
           <div className="col-md-6">
-            <div className="card px-3 py-4 shadow-sm">
-              <h4>CART SUMMARY</h4>
-              <hr />
-              {cartDetails ? (
-                <>
-                  <p>Items: {filteredCartItems.length}</p>
-                  <p>Price: ₹{cartDetails.totalCartPrice}</p>
-                  <p>
-                    Discount: {cartDetails.totalCartDiscount > 0 ? "-" : ""}₹
-                    {cartDetails.totalCartDiscount}
-                  </p>
-                  <p>Delivery Charges: ₹{cartDetails.deliveryCarges}</p>
-                  <hr className="mt-0" />
-                  <p className="fw-bold">
-                    FINAL AMOUNT: ₹{cartDetails.finalOrderAmount}
-                  </p>
-                  <hr className="mt-0" />
-                  <p>
-                    You will save ₹{cartDetails.totalCartDiscount} on this order
-                  </p>
-                  <Link to="/checkout" className="btn btn-custom w-100">
-                    Proceed to Checkout
-                  </Link>
-                </>
+            <Link to={"/orders"} className="btn btn-second-custom my-5 float-end">
+              View Past Orders
+            </Link>
+          </div>
+        </div>
+
+        {error && <p>An error occurred.</p>}
+        {filteredCartItems.length === 0 && hydrated ? (
+          <p>Your cart is empty.</p>
+        ) : (
+          <div className="row">
+            <div className="col-md-6">
+              <div className="row">{cartListing}</div>
+            </div>
+            <div className="col-md-6">
+              {cartDetails && hydrated ? (
+                <div className="card px-3 py-4 shadow-sm">
+                  <h4>CART SUMMARY</h4>
+                  <hr />
+                  {
+                    <>
+                      <p>Items: {filteredCartItems.length}</p>
+                      <p>Price: ₹{cartDetails.totalCartPrice}</p>
+                      <p>
+                        Discount: {cartDetails.totalCartDiscount > 0 ? "-" : ""}
+                        ₹{cartDetails.totalCartDiscount}
+                      </p>
+                      <p>Delivery Charges: ₹{cartDetails.deliveryCarges}</p>
+                      <hr className="mt-0" />
+                      <p className="fw-bold">
+                        FINAL AMOUNT: ₹{cartDetails.finalOrderAmount}
+                      </p>
+                      <hr className="mt-0" />
+                      <p>
+                        You will save ₹{cartDetails.totalCartDiscount} on this
+                        order
+                      </p>
+                      <Link to="/checkout" className="btn btn-custom w-100">
+                        Proceed to Checkout
+                      </Link>
+                    </>
+                  }
+                </div>
               ) : (
-                <p>Your cart is empty.</p>
+                ""
               )}
             </div>
           </div>
-        </div>
+        )}
       </main>
     </>
   );

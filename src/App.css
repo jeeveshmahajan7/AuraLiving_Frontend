@@ -194,3 +194,8 @@ input[type="range"] {
 .favorite-btn:focus {
   outline: none;
 }
+
+/* orange background */
+.orange-bg {
+  background-color: var(--aura-orange);
+}
