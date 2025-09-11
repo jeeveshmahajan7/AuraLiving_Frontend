@@ -34,11 +34,16 @@ const Cart = () => {
     }
   }, [data]);
 
-  const filteredCartItems = data?.cart || [];
+  const filteredCartItems = data?.cart
+    ? data.cart.filter((item) => localCartItems[item.product._id] > 0)
+    : [];
 
   useEffect(() => {
     if (!filteredCartItems.length) {
-      setCartDetails(null);
+      if (cartDetails !== null) {
+        // only update if not already null
+        setCartDetails(null);
+      }
       return;
     }
 
@@ -63,15 +68,19 @@ const Cart = () => {
     const deliveryCarges = cartAmountAfterDiscount > 499 ? 0 : 199;
     const finalOrderAmount = cartAmountAfterDiscount + deliveryCarges;
 
-    setCartDetails({
+    const newDetails = {
       cartItems: filteredCartItems,
       totalCartPrice,
       totalCartDiscount,
       cartAmountAfterDiscount,
       deliveryCarges,
       finalOrderAmount,
-    });
-  }, [filteredCartItems]);
+    };
+
+    if (JSON.stringify(cartDetails) !== JSON.stringify(newDetails)) {
+      setCartDetails(newDetails); // only update when different
+    }
+  }, [filteredCartItems, localCartItems]);
 
   if (error) return <p>An error occured.</p>;
 
