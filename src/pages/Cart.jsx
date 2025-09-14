@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { BiTrash } from "react-icons/bi";
 
 import useFetch from "../../useFetch";
 import useCart from "../Hooks/useCart";
@@ -9,15 +10,14 @@ import ProductsContext from "../contexts/ProductsContext";
 const Cart = () => {
   const {
     userId,
+    API,
     localCartItems,
     setLocalCartItems,
     cartDetails,
     setCartDetails,
   } = useContext(ProductsContext);
 
-  const { data, loading, error } = useFetch(
-    `https://aura-living-backend.vercel.app/users/${userId}/cart`
-  );
+  const { data, loading, error } = useFetch(`${API}/users/${userId}/cart`);
 
   const { addToCart, removeFromCart } = useCart();
 
@@ -107,7 +107,24 @@ const Cart = () => {
               </div>
               <div className="col-md-8">
                 <div className="card-body">
-                  <h6>{item.product.title}</h6>
+                  <div className="row">
+                    <div className="col-md-6">
+                      <h6>{item.product.title}</h6>
+                    </div>
+                    <div className="col-md-6">
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          removeFromCart(item.product._id, true);
+                        }}
+                        className="btn btn-second-custom float-end"
+                      >
+                        <BiTrash />
+                      </button>
+                    </div>
+                  </div>
+
                   <p>₹ {item.product.price}</p>
                   <div className="pb-2 pt-0">
                     <span>Quantity:</span>{" "}
@@ -153,7 +170,10 @@ const Cart = () => {
             <h1 className="display-6 py-5">My Cart</h1>
           </div>
           <div className="col-md-6">
-            <Link to={"/orders"} className="btn btn-second-custom my-5 float-end">
+            <Link
+              to={"/orders"}
+              className="btn btn-second-custom my-5 float-end"
+            >
               View Past Orders
             </Link>
           </div>
