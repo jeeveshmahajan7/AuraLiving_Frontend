@@ -1,4 +1,5 @@
 import { useContext } from "react";
+import { Link } from "react-router-dom";
 
 import ProductsContext from "../contexts/ProductsContext";
 import useFetch from "../../useFetch";
@@ -7,7 +8,6 @@ const CheckoutPage = () => {
   const { API, userId, cartDetails } = useContext(ProductsContext);
 
   const { data, loading, error } = useFetch(`${API}/user/${userId}/details`);
-  // console.log(data);
 
   const placeOrder = async () => {
     try {
@@ -67,9 +67,12 @@ const CheckoutPage = () => {
                 <h5>Delivering to {data?.userDetails?.name}</h5>
               </div>
               <div className="col-sm-6 text-end">
-                <button className="btn btn-second-custom">
-                  Add New Address
-                </button>
+                <Link to="/address"
+                  // todo: work here
+                  className="btn btn-second-custom"
+                >
+                  Change
+                </Link>
               </div>
             </div>
             <p>House no 12, ABC Street, Sector 10, Mumbai</p>
