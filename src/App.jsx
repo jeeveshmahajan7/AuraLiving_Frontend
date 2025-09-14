@@ -13,6 +13,7 @@ import Cart from "./pages/Cart";
 import Header from "./components/Header";
 import CheckoutPage from "./pages/CheckoutPage";
 import Orders from "./pages/Orders";
+import SelectAddress from "./pages/SelectAddress";
 
 function App() {
   const [priceUpperLimit, setPriceUpperLimit] = useState(10000);
@@ -63,6 +64,7 @@ function App() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/orders" element={<Orders />} />
+          <Route path="address" element={<SelectAddress />} />
         </Routes>
       </Router>
     </ProductsContext.Provider>

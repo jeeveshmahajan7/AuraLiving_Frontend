@@ -199,3 +199,8 @@ input[type="range"] {
 .orange-bg {
   background-color: var(--aura-orange);
 }
+
+/* add adress form header */
+.modal-header {
+  background-color: var(--aura-spring-wood);
+}
