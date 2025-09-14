@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import useFetch from "../../useFetch";
+import { FaStar } from "react-icons/fa6";
 
 import ProductsContext from "../contexts/ProductsContext";
 import FavoriteButton from "./FavoriteButton";
@@ -78,9 +79,21 @@ const ProductsList = () => {
               />
             </div>
             <div className="card-body">
-              <p>{product.category}</p>
+              <div className="row">
+                <div className="col-lg-8">
+                  <p>{product.category}</p>
+                </div>
+                <div className="col-lg-4 text-end">
+                  <p className="d-flex align-items-center gap-1">
+                    {product.rating}
+                    <FaStar />
+                  </p>
+                </div>
+              </div>
+
               <h5>{product.title}</h5>
-              <p>₹ {product.price}</p>
+              <p className="mb-1">₹ {product.price}</p>
+
               <button
                 onClick={(e) => {
                   e.preventDefault(); // prevents <Link> navigation
