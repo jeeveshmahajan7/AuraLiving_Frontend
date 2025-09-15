@@ -1,13 +1,13 @@
 import { useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 
 import ProductsContext from "../contexts/ProductsContext";
 import useFetch from "../../useFetch";
 
 const CheckoutPage = () => {
   const { API, userId, cartDetails } = useContext(ProductsContext);
-
-  const { data, loading, error } = useFetch(`${API}/user/${userId}/details`);
+  const { data, loading, error } = useFetch(`${API}/users/${userId}/details`);
+  const navigate = useNavigate();
 
   const placeOrder = async () => {
     try {
@@ -39,6 +39,7 @@ const CheckoutPage = () => {
 
       if (res.ok) {
         alert("✅ Order placed successfully!");
+        navigate("/cart");
       } else {
         alert("❌ Failed: " + result.message);
       }
@@ -67,7 +68,8 @@ const CheckoutPage = () => {
                 <h5>Delivering to {data?.userDetails?.name}</h5>
               </div>
               <div className="col-sm-6 text-end">
-                <Link to="/address"
+                <Link
+                  to="/address"
                   // todo: work here
                   className="btn btn-second-custom"
                 >
