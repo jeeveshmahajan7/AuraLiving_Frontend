@@ -132,23 +132,23 @@ const Cart = () => {
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        addToCart(item.product._id);
+                        removeFromCart(item.product._id);
                       }}
                       className="btn-custom"
                     >
-                      +
+                      -
                     </button>{" "}
                     {currentQty}{" "}
                     <button
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        removeFromCart(item.product._id);
+                        addToCart(item.product._id);
                       }}
                       className="btn-custom"
                     >
-                      -
-                    </button>
+                      +
+                    </button>{" "}
                   </div>
                   <button htmlFor="" className="btn btn-second-custom w-100">
                     Move to Favorites
