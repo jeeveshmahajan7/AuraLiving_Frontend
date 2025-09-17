@@ -204,3 +204,7 @@ input[type="range"] {
 .modal-header {
   background-color: var(--aura-spring-wood);
 }
+
+.active-link {
+  background-color: var(--aura-orange) !important;
+}
