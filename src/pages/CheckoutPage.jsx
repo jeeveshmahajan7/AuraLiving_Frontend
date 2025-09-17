@@ -8,6 +8,10 @@ const CheckoutPage = () => {
   const { API, userId, cartDetails } = useContext(ProductsContext);
   const { data, loading, error } = useFetch(`${API}/users/${userId}/details`);
   const navigate = useNavigate();
+  
+  const defaultAddress = data?.userDetails?.address?.find(
+    (addr) => addr.isDefault
+  );
 
   const placeOrder = async () => {
     try {
@@ -24,13 +28,12 @@ const CheckoutPage = () => {
           })),
           totalPrice: cartDetails.finalOrderAmount,
           address: {
-            name: data?.userDetails?.name,
-            street: "House no 12, ABC Street",
-            city: "Mumbai",
-            state: "MH",
-            zip: 400001,
-            phone: 9876543210,
-            // todo: change this static address, use user selected address
+            name: defaultAddress?.name,
+            street: defaultAddress?.street,
+            city: defaultAddress?.city,
+            state: defaultAddress?.state,
+            zip: defaultAddress?.zip,
+            phone: defaultAddress?.phoneNumber,
           },
         }),
       });
@@ -65,19 +68,22 @@ const CheckoutPage = () => {
           <div className="card-body">
             <div className="row align-items-center">
               <div className="col-sm-6">
-                <h5>Delivering to {data?.userDetails?.name}</h5>
+                <h5>Delivering to {defaultAddress?.name}</h5>
               </div>
               <div className="col-sm-6 text-end">
                 <Link
                   to="/address"
-                  // todo: work here
                   className="btn btn-second-custom"
                 >
                   Change
                 </Link>
               </div>
             </div>
-            <p>House no 12, ABC Street, Sector 10, Mumbai</p>
+            <p>
+              {defaultAddress?.street}, {defaultAddress?.city},{" "}
+              {defaultAddress?.state}
+            </p>
+            <p>Contact number: {defaultAddress?.phone}</p>
             <hr />
             <p>Price: ₹{cartDetails.totalCartPrice}</p>
             <p>Delivery Charges: ₹{cartDetails.deliveryCarges}</p>
