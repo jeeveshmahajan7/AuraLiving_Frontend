@@ -1,10 +1,15 @@
 import useFetch from "../../useFetch";
 import { useContext } from "react";
 import ProductsContext from "../contexts/ProductsContext";
+import { useLocation } from "react-router-dom";
 
 const Orders = () => {
   const { API, userId } = useContext(ProductsContext);
   const { data, loading, error } = useFetch(`${API}/users/${userId}/orders`);
+
+  // to hide the heading on the account page
+  const location = useLocation();
+  const isInsideAccount = location.pathname.startsWith("/account");
 
   const ordersListing = loading ? (
     <p>Loading orders...</p>
@@ -14,9 +19,10 @@ const Orders = () => {
     data.orders.map((order) => (
       <div key={order._id} className="card mb-4 shadow-sm">
         <div className="card-body">
-          <h5 className="card-title">
+          <p className="card-title">
             Order #{order._id.slice(-6).toUpperCase()}
-          </h5>
+          </p>
+          <h4 className="mb-2">{order.address.name}</h4>
           <p className="mb-1">
             <strong>Status:</strong> {order.status}
           </p>
@@ -58,7 +64,7 @@ const Orders = () => {
   return (
     <>
       <main className="container">
-        <h1 className="display-6 py-5">Order History</h1>
+        {!isInsideAccount && <h1 className="display-6 py-5">Order History</h1>}
         {ordersListing}
       </main>
     </>
