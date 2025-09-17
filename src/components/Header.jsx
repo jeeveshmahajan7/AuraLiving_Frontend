@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { AiFillHeart, AiOutlineShoppingCart } from "react-icons/ai";
+import { FaUserAlt } from "react-icons/fa";
 
 const Header = () => {
   return (
@@ -35,18 +36,22 @@ const Header = () => {
             </form>
             <ul className="navbar-nav ms-auto">
               <li className="nav-item mx-md-2">
-                <Link to="" className="btn btn-custom">
+                {/* <Link to="" className="btn btn-custom">
                   Login
+                </Link> */}
+                {/* todo: Use this while implementing login functionality */}
+                <Link to="/account" className="nav-link">
+                  <FaUserAlt color="black" size={16} /> Account
                 </Link>
               </li>
               <li className="nav-item mx-md-2">
                 <Link to="/favorites" className="nav-link">
-                  <AiFillHeart color="red" size={20}/> Favorites
+                  <AiFillHeart color="red" size={20} /> Favorites
                 </Link>
               </li>
               <li className="nav-item mx-md-2">
                 <Link to="/cart" className="nav-link">
-                  <AiOutlineShoppingCart color="black" size={20}/> Cart
+                  <AiOutlineShoppingCart color="black" size={20} /> Cart
                 </Link>
               </li>
             </ul>
