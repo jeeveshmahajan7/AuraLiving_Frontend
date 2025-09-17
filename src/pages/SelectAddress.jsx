@@ -1,5 +1,4 @@
-import useFetch from "../../useFetch";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { BiTrash } from "react-icons/bi";
 
 import ProductsContext from "../contexts/ProductsContext";
@@ -9,6 +8,7 @@ const SelectAddress = () => {
   const { API, userId } = useContext(ProductsContext);
   const [addressFormVisibility, setAddressFormVisibility] = useState(false);
   const [addresses, setAddresses] = useState([]);
+  const [editingAddressId, setEditingAddressId] = useState(null); // to track whether to edit/add address
 
   const [addressName, setAddressName] = useState("");
   const [addressStreet, setAddressStreet] = useState("");
@@ -18,6 +18,10 @@ const SelectAddress = () => {
   const [addressPhoneNumber, setAddressPhoneNumber] = useState("");
   const [isAddressDefault, setIsAddressDefault] = useState(false);
 
+  // to hide the heading on the account page
+  const location = useLocation();
+  const isInsideAccount = location.pathname.startsWith("/account");
+
   // fetching initial data to store in local state for instant UI changes
   const fetchInitialUserData = async () => {
     try {
@@ -26,7 +30,6 @@ const SelectAddress = () => {
       if (res.ok) {
         const data = await res.json();
         setAddresses(data.userDetails.address || []);
-        console.log(data);
       } else {
         console.log("Failed to fetch user data, status:", res.status);
       }
@@ -58,7 +61,7 @@ const SelectAddress = () => {
   };
 
   const handleNewAddressAddition = async () => {
-    setAddressFormVisibility(false);
+    closeForm();
     try {
       const addressDetails = {
         name: addressName,
@@ -81,25 +84,162 @@ const SelectAddress = () => {
       if (!res.ok) {
         alert("Failed to add address. ❌");
         return;
-      } else {
-        setAddresses((prev) => [...prev, addressDetails]);
-        alert("Address added successfully! ✅");
       }
+
+      // 👇 expect backend to return the saved address with _id
+      const newAddressFromDB = await res.json();
+
+      setAddresses((prev) => {
+        // if new address is default, reset isDefault of old ones
+        if (newAddressFromDB.isDefault) {
+          return [
+            ...prev.map((addr) => ({ ...addr, isDefault: false })),
+            newAddressFromDB,
+          ];
+        }
+        return [...prev, newAddressFromDB];
+      });
+      alert("Address added successfully! ✅");
     } catch (error) {
       alert("Failed to save address:", error.message);
     }
   };
 
+  const handleDefaultAddress = async (addressId) => {
+    try {
+      const res = await fetch(
+        `${API}/users/${userId}/address/${addressId}/default`,
+        {
+          method: "PUT",
+        }
+      );
+
+      if (!res.ok) {
+        alert("Failed to update default address.❌");
+        return;
+      }
+
+      // optimistically update UI for instant changes
+      setAddresses((prev) =>
+        prev.map((addr) => ({
+          ...addr,
+          isDefault: addr._id === addressId,
+        }))
+      );
+
+      alert("Default address updated!✅");
+    } catch (error) {
+      console.log("Error setting default address:", error.message);
+    }
+  };
+
+  const triggerAddressUpdation = async (addressId) => {
+    const addrToEdit = addresses.find((addr) => addr._id === addressId);
+    if (!addrToEdit) return;
+    setEditingAddressId(addressId);
+    setAddressName(addrToEdit.name);
+    setAddressStreet(addrToEdit.street);
+    setAddressCity(addrToEdit.city);
+    setAddressState(addrToEdit.state);
+    setAddressZipcode(addrToEdit.zip);
+    setAddressPhoneNumber(addrToEdit.phone);
+    setIsAddressDefault(addrToEdit.isDefault);
+
+    setAddressFormVisibility(true);
+  };
+
+  const handleAddressUpdation = async (editingAddressId) => {
+    try {
+      const updatedAddress = {
+        name: addressName,
+        street: addressStreet,
+        city: addressCity,
+        state: addressState,
+        zip: addressZipcode,
+        phone: addressPhoneNumber,
+        isDefault: isAddressDefault,
+      };
+
+      const res = await fetch(
+        `${API}/users/${userId}/address/${editingAddressId}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updatedAddress),
+        }
+      );
+
+      if (!res.ok) {
+        alert("Failed to update address ❌");
+        return;
+      }
+
+      // Update local state
+      setAddresses((prev) =>
+        prev.map((addr) => {
+          if (addr._id === editingAddressId) {
+            return { ...addr, ...updatedAddress };
+          } else if (updatedAddress.isDefault) {
+            // reset other addresses if new one is default
+            return { ...addr, isDefault: false };
+          } else {
+            return addr;
+          }
+        })
+      );
+
+      alert("Address updated successfully! ✅");
+
+      // reset modal state
+      closeForm();
+      setEditingAddressId(null);
+    } catch (error) {
+      console.log("Error updating address:", error.message);
+    }
+  };
+
+  // to reset the form input fields back to blank for fresh form
+  const resetForm = () => {
+    setEditingAddressId(null);
+    setAddressName("");
+    setAddressStreet("");
+    setAddressCity("");
+    setAddressState("");
+    setAddressZipcode("");
+    setAddressPhoneNumber("");
+    setIsAddressDefault(false);
+  };
+
+  const closeForm = () => {
+    setAddressFormVisibility(false);
+    resetForm();
+  };
+
   return (
     <>
       <main className="container">
-        <h1 className="display-6 py-5">Select a delivery address</h1>
-        <h5>Delivery Addresses ({addresses.length})</h5>
+        {!isInsideAccount && (
+          <h1 className="display-6 py-5">Select a delivery address</h1>
+        )}
+        <div className="row mb-4 align-items-center">
+          <div className="col-md-6">
+            <h5>Delivery Addresses ({addresses?.length ?? 0})</h5>
+          </div>
+          <div className="col-md-6 text-md-end">
+            <Link
+              onClick={() => setAddressFormVisibility(true)}
+              className="btn btn-second-custom"
+            >
+              Add New Address
+            </Link>
+          </div>
+        </div>
+
         {/* todo: add delivery address count */}
         {addresses && addresses.length > 0 && (
-          <ul className="list-group">
+          <ul className={`list-group ${isInsideAccount ? "mb-5" : ""}`}>
             {addresses.map((addr) => (
-              <li key={addr._id} className="list-group-item">
+              <li key={addr._id || index} className="list-group-item">
                 <div className="row">
                   <div className="col-md-8">
                     <p>{addr.name}</p>
@@ -120,30 +260,58 @@ const SelectAddress = () => {
                   {addr.street}, {addr.city}, {addr.state} - {addr.zip}
                 </p>
                 <p>Phone: {addr.phone}</p>
+                <div className="d-flex gap-2">
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      triggerAddressUpdation(addr._id);
+                    }}
+                    className="btn btn-second-custom btn-sm"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className={`btn btn-sm ${
+                      addr.isDefault ? "btn-custom" : "btn-second-custom"
+                    }`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleDefaultAddress(addr._id);
+                    }}
+                  >
+                    {addr.isDefault ? "Default Address" : "Set as default"}
+                  </button>
+                </div>
               </li>
             ))}
           </ul>
         )}
-        <hr />
-        <Link
-          onClick={() => setAddressFormVisibility(true)}
-          className="btn btn-second-custom mb-5"
-        >
-          Add New Address
-        </Link>
+
+        {!isInsideAccount && (
+          <>
+            <hr />
+            <Link to="/checkout" className="btn btn-custom mb-5">
+              Save Defaults
+            </Link>
+          </>
+        )}
 
         {addressFormVisibility && (
           <div className="modal show" style={{ display: "block" }}>
             <div className="modal-dialog mt-5">
               <div className="modal-content">
                 <div className="modal-header">
-                  <p className="modal-title">Add an address</p>
+                  <p className="modal-title">
+                    {editingAddressId ? "Edit address" : "Add an address"}
+                  </p>
                   <button
                     type="button"
                     className="btn-close"
                     data-bs-dismiss="modal"
                     aria-label="Close"
-                    onClick={() => setAddressFormVisibility(false)}
+                    onClick={() => closeForm()}
                   ></button>
                 </div>
                 <div className="modal-body">
@@ -152,7 +320,11 @@ const SelectAddress = () => {
                   <form
                     onSubmit={(e) => {
                       e.preventDefault();
-                      handleNewAddressAddition();
+                      if (editingAddressId) {
+                        handleAddressUpdation(editingAddressId);
+                      } else {
+                        handleNewAddressAddition();
+                      }
                     }}
                   >
                     <div className="mb-3">
@@ -164,6 +336,7 @@ const SelectAddress = () => {
                         id="name"
                         name="name"
                         type="text"
+                        value={addressName}
                         required
                         onChange={(e) => setAddressName(e.target.value)}
                       />
@@ -178,6 +351,7 @@ const SelectAddress = () => {
                         id="street"
                         name="street"
                         type="text"
+                        value={addressStreet}
                         required
                         onChange={(e) => setAddressStreet(e.target.value)}
                       />
@@ -192,6 +366,7 @@ const SelectAddress = () => {
                         id="city"
                         name="city"
                         type="text"
+                        value={addressCity}
                         required
                         onChange={(e) => setAddressCity(e.target.value)}
                       />
@@ -206,6 +381,7 @@ const SelectAddress = () => {
                         id="state"
                         name="state"
                         type="text"
+                        value={addressState}
                         required
                         onChange={(e) => setAddressState(e.target.value)}
                       />
@@ -224,6 +400,7 @@ const SelectAddress = () => {
                         pattern="[0-9]{6}"
                         minLength={6}
                         maxLength={6}
+                        value={addressZipcode}
                         required
                         onChange={(e) => setAddressZipcode(e.target.value)}
                       />
@@ -242,6 +419,7 @@ const SelectAddress = () => {
                         pattern="[0-9]{10}"
                         minLength={10}
                         maxLength={10}
+                        value={addressPhoneNumber}
                         required
                         onChange={(e) => setAddressPhoneNumber(e.target.value)}
                       />
@@ -252,6 +430,7 @@ const SelectAddress = () => {
                         <input
                           className="form-check-input"
                           type="checkbox"
+                          checked={isAddressDefault}
                           onChange={(e) =>
                             setIsAddressDefault(e.target.checked)
                           }
@@ -261,7 +440,7 @@ const SelectAddress = () => {
                     </div>
 
                     <button className="btn btn-custom" type="submit">
-                      Use this address
+                      {editingAddressId ? "Save changes" : "Use this address"}
                     </button>
                   </form>
                 </div>
