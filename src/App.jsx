@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
@@ -14,6 +15,8 @@ import Header from "./components/Header";
 import CheckoutPage from "./pages/CheckoutPage";
 import Orders from "./pages/Orders";
 import SelectAddress from "./pages/SelectAddress";
+import AccountLayout from "./pages/AccountLayout";
+import Profile from "./components/Profile";
 
 function App() {
   const [priceUpperLimit, setPriceUpperLimit] = useState(10000);
@@ -64,7 +67,14 @@ function App() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/orders" element={<Orders />} />
-          <Route path="address" element={<SelectAddress />} />
+          <Route path="/address" element={<SelectAddress />} />
+          <Route path="/account" element={<AccountLayout />}>
+            <Route index element={<Navigate to="profile" replace />} />
+            {/* Default active tab */}
+            <Route path="profile" element={<Profile />} />
+            <Route path="orders" element={<Orders />} />
+            <Route path="address/new" element={<SelectAddress />} />
+          </Route>
         </Routes>
       </Router>
     </ProductsContext.Provider>
