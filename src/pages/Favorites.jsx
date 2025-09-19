@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { TbLoader } from "react-icons/tb";
+import { toast } from "react-toastify";
 
 import ProductsContext from "../contexts/ProductsContext";
 import useFavorites from "../Hooks/useFavorites";
