@@ -1,6 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { BiTrash } from "react-icons/bi";
+import { TbLoader } from "react-icons/tb";
+import { toast } from "react-toastify";
 
 import useFetch from "../../useFetch";
 import useCart from "../Hooks/useCart";
@@ -19,7 +21,7 @@ const Cart = () => {
 
   const { data, loading, error } = useFetch(`${API}/users/${userId}/cart`);
 
-  const { addToCart, removeFromCart } = useCart();
+  const { addToCart, removeFromCart, loadingItems } = useCart();
 
   const [hydrated, setHydrated] = useState(false); // tracks if the cart items is populated from the backend
 
@@ -85,7 +87,7 @@ const Cart = () => {
   if (error) return <p>An error occured.</p>;
 
   if (loading && !hydrated) {
-    return <div>Loading cart...</div>;
+    return <p className="container loading-custom">Loading cart...</p>;
   }
 
   const cartListing = filteredCartItems.map((item) => {
@@ -113,12 +115,14 @@ const Cart = () => {
                     </div>
                     <div className="col-md-6">
                       <button
-                        onClick={(e) => {
+                        onClick={async (e) => {
                           e.preventDefault();
                           e.stopPropagation();
-                          removeFromCart(item.product._id, true);
+                          await removeFromCart(item.product._id, true);
+                          toast.success("Product removed from cart ✅");
                         }}
                         className="btn btn-second-custom float-end"
+                        disabled={loadingItems[item.product._id]} // ⬅️ disable trash icon while loading
                       >
                         <BiTrash />
                       </button>
@@ -133,10 +137,19 @@ const Cart = () => {
                         e.preventDefault();
                         e.stopPropagation();
                         removeFromCart(item.product._id);
+                        // show toast only if quantity goes to 0
+                        if (currentQty === 1) {
+                          toast.success("Product removed from cart ✅");
+                        }
                       }}
                       className="btn-custom"
+                      disabled={loadingItems[item.product._id]} // ⬅️ disable while loading
                     >
-                      -
+                      {loadingItems[item.product._id] ? (
+                        <TbLoader className="spin" />
+                      ) : (
+                        "-"
+                      )}
                     </button>{" "}
                     {currentQty}{" "}
                     <button
@@ -146,8 +159,13 @@ const Cart = () => {
                         addToCart(item.product._id);
                       }}
                       className="btn-custom"
+                      disabled={loadingItems[item.product._id]} // ⬅️ disable while loading
                     >
-                      +
+                      {loadingItems[item.product._id] ? (
+                        <TbLoader className="spin" />
+                      ) : (
+                        "+"
+                      )}
                     </button>{" "}
                   </div>
                   <button htmlFor="" className="btn btn-second-custom w-100">
