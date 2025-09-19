@@ -8,7 +8,7 @@ const AccountLayout = () => {
       <main className="container">
         <h1 className="display-6 py-5">User Details</h1>
 
-        <div className="row">
+        <div className="row pb-5">
           <div className="col-md-3">
             <ul className="list-group">
               <Link
