@@ -18,6 +18,8 @@ const ProductsList = () => {
   const { toggleFavorite } = useFavorites();
   const { addToCart, loadingItems } = useCart();
 
+  const productsArray = Array.isArray(data?.products) ? data.products : [];
+
   // filtering products basis filters applied
   const [filteredProductsData, setFilteredProductsData] = useState([]);
 
@@ -28,29 +30,51 @@ const ProductsList = () => {
     sortingRule,
     setFilteredProductsLength,
     localFavoriteIds,
+    searchQuery,
   } = useContext(ProductsContext);
 
   // runs on filter change
   useEffect(() => {
-    if (!data?.products) return;
-
-    const filteredProducts = data.products.filter((product) => {
-      const matchesPrice = product.price < priceUpperLimit;
-      const matchesRating = product.rating > parseInt(minimumRating);
-      let matchesCategory = true;
-
-      if (selectedCategories.length > 0) {
-        matchesCategory = selectedCategories.includes(
-          product.category.toLowerCase()
-        );
+    try {
+      if (!data?.products) {
+        setFilteredProductsData([]);
+        setFilteredProductsLength(0);
+        return;
       }
 
-      return matchesPrice && matchesRating && matchesCategory;
-    });
+      const filteredProducts = productsArray.filter((product) => {
+        if (!product) return false;
 
-    setFilteredProductsData(filteredProducts);
-    setFilteredProductsLength(filteredProducts.length);
-  }, [data, priceUpperLimit, selectedCategories, minimumRating]);
+        const matchesPrice = product.price < priceUpperLimit;
+        const matchesRating = product.rating > parseInt(minimumRating);
+
+        // search by title or category
+        const matchesSearchQuery = searchQuery
+          ? product.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            product.category?.toLowerCase().includes(searchQuery.toLowerCase())
+          : true; // if searchQuery is empty, show all products
+
+        let matchesCategory = true;
+
+        if (selectedCategories.length > 0) {
+          matchesCategory = selectedCategories.includes(
+            product.category.toLowerCase()
+          );
+        }
+
+        return (
+          matchesPrice && matchesRating && matchesCategory && matchesSearchQuery
+        );
+      });
+
+      setFilteredProductsData(filteredProducts);
+      setFilteredProductsLength(filteredProducts.length);
+    } catch (err) {
+      console.error("ProductsList filtering error:", err);
+      setFilteredProductsData([]);
+      setFilteredProductsLength(0);
+    }
+  }, [data, priceUpperLimit, selectedCategories, minimumRating, searchQuery]);
 
   const finalProducts =
     sortingRule === ""
@@ -70,8 +94,8 @@ const ProductsList = () => {
           <div className="card card-products mb-3 position-relative">
             <img
               className="card-img-top img-fluid card-img object-fit-cover"
-              src={`${product.imgUrl}`}
-              alt={`${product.title} image.`}
+              src={product.imgUrl || ""}
+              alt={`${product.title || "Product"} image.`}
             />
             <div className="position-absolute top-0 end-0 m-2">
               <FavoriteButton
@@ -87,7 +111,7 @@ const ProductsList = () => {
                 </div>
                 <div className="col-lg-4 text-end">
                   <p className="d-flex align-items-center gap-1">
-                    {product.rating}
+                    {product.rating || 0}
                     <FaStar />
                   </p>
                 </div>

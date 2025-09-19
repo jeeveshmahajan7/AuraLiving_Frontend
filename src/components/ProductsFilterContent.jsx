@@ -12,6 +12,7 @@ const ProductsFilterContent = () => {
     setSelectedCategories,
     setMinimumRating,
     setSortingRule,
+    setSearchQuery,
   } = useContext(ProductsContext);
 
   const navigate = useNavigate(); // to handle navigation on clearing filters
@@ -49,6 +50,7 @@ const ProductsFilterContent = () => {
     setSelectedCategories([]);
     setMinimumRating(0);
     setSortingRule(""); // to clear sort on click of Show All Products i.e. clear filters button
+    setSearchQuery(""); // to remove search query from the search bar
     navigate("/products"); // navigate to the products listing page, clears the /:category route to remove default filter
   };
 
