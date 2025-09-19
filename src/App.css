@@ -208,3 +208,12 @@ input[type="range"] {
 .active-link {
   background-color: var(--aura-orange) !important;
 }
+
+/* loading container */
+.loading-custom {
+  background-color: var(--aura-spring-wood);
+  padding: 0.5rem;
+  padding-left: 3rem;
+  /* text-align: center; */
+  border-radius: 3rem;
+}
