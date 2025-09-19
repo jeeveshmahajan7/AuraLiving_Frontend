@@ -119,7 +119,7 @@ const Cart = () => {
                           e.preventDefault();
                           e.stopPropagation();
                           await removeFromCart(item.product._id, true);
-                          toast.success("Product removed from cart ✅");
+                          toast.success("Product removed from cart");
                         }}
                         className="btn btn-second-custom float-end"
                         disabled={loadingItems[item.product._id]} // ⬅️ disable trash icon while loading
@@ -139,7 +139,7 @@ const Cart = () => {
                         removeFromCart(item.product._id);
                         // show toast only if quantity goes to 0
                         if (currentQty === 1) {
-                          toast.success("Product removed from cart ✅");
+                          toast.success("Product removed from cart");
                         }
                       }}
                       className="btn-custom"

@@ -42,10 +42,10 @@ const CheckoutPage = () => {
       const result = await res.json();
 
       if (res.ok) {
-        toast.success("Order placed successfully ✅");
+        toast.success("Order placed successfully");
         navigate("/cart");
       } else {
-        toast.error("Failed to place the order ❌");
+        toast.error("Failed to place the order");
       }
     } catch (error) {
       console.log(

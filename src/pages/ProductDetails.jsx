@@ -67,7 +67,7 @@ const ProductDetails = () => {
                   e.preventDefault();
                   e.stopPropagation();
                   addToCart(product._id);
-                  toast.success("Product added to Cart ✅");
+                  toast.success("Product added to Cart");
                 }}
                 className="btn btn-custom w-100 my-2"
                 disabled={loadingItems[product._id]} // ⬅️ disable while loading

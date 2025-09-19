@@ -50,11 +50,11 @@ const SelectAddress = () => {
       });
 
       if (!res.ok) {
-        toast.error("Address Deletion Unsuccessfull ❌");
+        toast.error("Address Deletion Unsuccessfull");
         return;
       } else {
         setAddresses((prev) => prev.filter((addr) => addr._id !== addressId));
-        toast.success("Address Deleted Successfully ✅");
+        toast.success("Address Deleted Successfully");
       }
     } catch (error) {
       console.log("Error deleting address:", error.message);
@@ -83,7 +83,7 @@ const SelectAddress = () => {
       });
 
       if (!res.ok) {
-        toast.error("Failed to add address ❌");
+        toast.error("Failed to add address");
         return;
       }
 
@@ -100,9 +100,9 @@ const SelectAddress = () => {
         }
         return [...prev, newAddressFromDB];
       });
-      toast.success("Address added successfully! ✅");
+      toast.success("Address added successfully");
     } catch (error) {
-      toast.error("Failed to add address ❌");
+      toast.error("Failed to add address");
     }
   };
 
@@ -116,7 +116,7 @@ const SelectAddress = () => {
       );
 
       if (!res.ok) {
-        toast.error("Failed to update default address ❌");
+        toast.error("Failed to update default address");
         return;
       }
 
@@ -128,9 +128,9 @@ const SelectAddress = () => {
         }))
       );
 
-      toast.success("Default address updated ✅");
+      toast.success("Default address updated");
     } catch (error) {
-       toast.error("Error updating default address ❌");
+       toast.error("Error updating default address");
     }
   };
 
@@ -171,7 +171,7 @@ const SelectAddress = () => {
       );
 
       if (!res.ok) {
-        toast.error("Failed to update address ❌");
+        toast.error("Failed to update address");
         return;
       }
 
@@ -189,13 +189,13 @@ const SelectAddress = () => {
         })
       );
 
-      toast.success("Address updated successfully! ✅");
+      toast.success("Address updated successfully");
 
       // reset modal state
       closeForm();
       setEditingAddressId(null);
     } catch (error) {
-      toast.error("Error updating address ❌");
+      toast.error("Error updating address");
     }
   };
 

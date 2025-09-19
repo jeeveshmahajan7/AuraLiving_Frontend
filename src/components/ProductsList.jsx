@@ -101,7 +101,7 @@ const ProductsList = () => {
                   e.preventDefault(); // prevents <Link> navigation
                   e.stopPropagation(); // prevents bubbling to card
                   addToCart(product._id);
-                  toast.success("Product added to Cart ✅");
+                  toast.success("Product added to Cart");
                 }}
                 className="btn btn-custom w-50"
                 disabled={loadingItems[product._id]} // ⬅️ disable while loading
