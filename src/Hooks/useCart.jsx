@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import ProductsContext from "../contexts/ProductsContext";
 import useFetch from "../../useFetch";
@@ -6,6 +6,9 @@ import useFetch from "../../useFetch";
 const useCart = () => {
   const { localCartItems, setLocalCartItems, userId, API } =
     useContext(ProductsContext);
+
+  // track loading state for every product Id
+  const [loadingItems, setLoadingItems] = useState({});
 
   // fetching initial cart data from backend
   const { data: cartData } = useFetch(
@@ -25,6 +28,8 @@ const useCart = () => {
 
   // adds a product or increases the qty (as set in backend)
   const addToCart = async (productId) => {
+    setLoadingItems((prev) => ({ ...prev, [productId]: true }));
+
     // updating the UI instantly
     setLocalCartItems((prev) => ({
       ...prev,
@@ -52,7 +57,7 @@ const useCart = () => {
         const qty = (prev[productId] || 0) - 1;
 
         if (qty <= 0) {
-          const copy = {...prev};
+          const copy = { ...prev };
           delete copy[productId];
           return copy;
         }
@@ -60,11 +65,15 @@ const useCart = () => {
       });
 
       throw error;
+    } finally {
+      setLoadingItems((prev) => ({ ...prev, [productId]: false }));
     }
   };
 
   // deletes a product
   const removeFromCart = async (productId, removeAll = false) => {
+    setLoadingItems((prev) => ({ ...prev, [productId]: true }));
+
     // updating the UI instantly
     setLocalCartItems((prev) => {
       if (removeAll || (prev[productId] ?? 0) <= 1) {
@@ -100,6 +109,8 @@ const useCart = () => {
       }));
 
       throw error;
+    } finally {
+      setLoadingItems((prev) => ({ ...prev, [productId]: false }));
     }
   };
 
@@ -107,6 +118,7 @@ const useCart = () => {
     localCartItems,
     addToCart,
     removeFromCart,
+    loadingItems,
   };
 };
 
