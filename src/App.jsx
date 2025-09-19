@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Navigate } from "react-router-dom";
 import { useState } from "react";
+import { ToastContainer } from "react-toastify";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "./App.css";
@@ -77,6 +78,8 @@ function App() {
           </Route>
         </Routes>
       </Router>
+      {/* Added ToastContainer once at root of App */}
+      <ToastContainer position="top-center" autoClose={2000} />
     </ProductsContext.Provider>
   );
 }
