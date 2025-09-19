@@ -12,7 +12,7 @@ const Orders = () => {
   const isInsideAccount = location.pathname.startsWith("/account");
 
   const ordersListing = loading ? (
-    <p>Loading orders...</p>
+    <p className="container loading-custom">Loading orders...</p>
   ) : error ? (
     <p className="text-danger">{error}</p>
   ) : data && data.orders && data.orders.length > 0 ? (
