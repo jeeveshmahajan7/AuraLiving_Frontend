@@ -49,7 +49,7 @@ const Favorites = () => {
 
   // Show empty message only if data loaded but no favorites
   if (filteredFavorites.length === 0) {
-    return <p>Your favorites list is empty.</p>;
+    return <p className="container">Your favorites list is empty.</p>;
   }
 
   const favoritesListing = filteredFavorites.map((product) => (
