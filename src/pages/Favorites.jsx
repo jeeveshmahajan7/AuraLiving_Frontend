@@ -77,7 +77,7 @@ const Favorites = () => {
             <h6>{product.title}</h6>
             <p>₹ {product.price}</p>
             <button
-              onClickCapture={(e) => {
+              onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 addToCart(product._id);
