@@ -80,6 +80,7 @@ const Favorites = () => {
                 e.preventDefault();
                 e.stopPropagation();
                 addToCart(product._id);
+                toast.success("Product added to Cart");
               }}
               className="btn btn-custom w-50"
               disabled={loadingItems[product._id]}
