@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import useFetch from "../../useFetch";
 import { FaStar } from "react-icons/fa6";
+import { toast } from "react-toastify";
+import { TbLoader } from "react-icons/tb";
 
 import ProductsContext from "../contexts/ProductsContext";
 import FavoriteButton from "./FavoriteButton";
@@ -14,7 +16,7 @@ const ProductsList = () => {
   );
 
   const { toggleFavorite } = useFavorites();
-  const { addToCart } = useCart();
+  const { addToCart, loadingItems } = useCart();
 
   // filtering products basis filters applied
   const [filteredProductsData, setFilteredProductsData] = useState([]);
@@ -99,10 +101,16 @@ const ProductsList = () => {
                   e.preventDefault(); // prevents <Link> navigation
                   e.stopPropagation(); // prevents bubbling to card
                   addToCart(product._id);
+                  toast.success("Product added to Cart ✅");
                 }}
-                className="btn btn-custom"
+                className="btn btn-custom w-50"
+                disabled={loadingItems[product._id]} // ⬅️ disable while loading
               >
-                Add to Cart
+                {loadingItems[product._id] ? (
+                  <TbLoader className="spin" />
+                ) : (
+                  "ADD TO CART"
+                )}
               </button>
             </div>
           </div>
@@ -111,7 +119,15 @@ const ProductsList = () => {
     );
   });
 
-  return <>{productsList}</>;
+  return (
+    <>
+      {loading && (
+        <p className="container loading-custom">Loading Products List...</p>
+      )}
+      {error && <p className="container">Error loading products.</p>}
+      <div className="row">{productsList}</div>
+    </>
+  );
 };
 
 export default ProductsList;
