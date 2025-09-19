@@ -1,5 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
+import { toast } from "react-toastify";
+import { TbLoader } from "react-icons/tb";
 
 import useFetch from "../../useFetch";
 import useCart from "../Hooks/useCart";
@@ -14,7 +16,7 @@ const ProductDetails = () => {
     `https://aura-living-backend.vercel.app/products/details/${productId}`
   );
 
-  const { addToCart } = useCart();
+  const { addToCart, loadingItems } = useCart();
   const { toggleFavorite } = useFavorites();
   const { localFavoriteIds } = useContext(ProductsContext);
 
@@ -35,7 +37,7 @@ const ProductDetails = () => {
     }
   }, [data]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p className="container loading-custom">Loading...</p>;
   if (error) return <p>An error occured.</p>;
   if (!product) return <p>No product found.</p>;
 
@@ -65,10 +67,16 @@ const ProductDetails = () => {
                   e.preventDefault();
                   e.stopPropagation();
                   addToCart(product._id);
+                  toast.success("Product added to Cart ✅");
                 }}
                 className="btn btn-custom w-100 my-2"
+                disabled={loadingItems[product._id]} // ⬅️ disable while loading
               >
-                ADD TO CART
+                {loadingItems[product._id] ? (
+                  <TbLoader className="spin" />
+                ) : (
+                  "ADD TO CART"
+                )}
               </button>
             </div>
             <div>
