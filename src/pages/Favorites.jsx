@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
+import { TbLoader } from "react-icons/tb";
 
 import ProductsContext from "../contexts/ProductsContext";
 import useFavorites from "../Hooks/useFavorites";
@@ -17,7 +18,7 @@ const Favorites = () => {
     `https://aura-living-backend.vercel.app/users/${userId}/favorites`
   );
 
-  const { addToCart } = useCart();
+  const { addToCart, loadingItems } = useCart();
 
   // Local state to store full favorite products data
   const [favoriteProductsData, setFavoriteProductsData] = useState(null);
@@ -32,7 +33,7 @@ const Favorites = () => {
 
   // While favoriteProductsData is null, data not yet loaded
   if (favoriteProductsData === null) {
-    return <p>Loading favorites...</p>;
+    return <p className="container loading-custom">Loading favorites...</p>;
   }
 
   // If fetch hook reports error
@@ -80,9 +81,14 @@ const Favorites = () => {
                 e.stopPropagation();
                 addToCart(product._id);
               }}
-              className="btn btn-custom"
+              className="btn btn-custom w-50"
+              disabled={loadingItems[product._id]}
             >
-              Add to Cart
+              {loadingItems[product._id] ? (
+                <TbLoader className="spin" />
+              ) : (
+                "Add to Cart"
+              )}
             </button>
           </div>
         </div>
