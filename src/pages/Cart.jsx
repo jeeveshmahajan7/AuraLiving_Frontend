@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 
 import useFetch from "../../useFetch";
 import useCart from "../Hooks/useCart";
+import useFavorites from "../Hooks/useFavorites";
 
 import ProductsContext from "../contexts/ProductsContext";
 
@@ -18,6 +19,8 @@ const Cart = () => {
     cartDetails,
     setCartDetails,
   } = useContext(ProductsContext);
+
+  const { toggleFavorite } = useFavorites();
 
   const { data, loading, error } = useFetch(`${API}/users/${userId}/cart`);
 
@@ -168,7 +171,17 @@ const Cart = () => {
                       )}
                     </button>{" "}
                   </div>
-                  <button htmlFor="" className="btn btn-second-custom w-100">
+                  <button
+                    onClick={async (e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+
+                      await removeFromCart(item.product._id, true); // remove all qty
+                      toggleFavorite(item.product._id);
+                      toast.success("Moved to favorites");
+                    }}
+                    className="btn btn-second-custom w-100"
+                  >
                     Move to Favorites
                   </button>
                 </div>
