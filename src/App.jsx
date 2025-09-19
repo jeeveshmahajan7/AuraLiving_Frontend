@@ -28,6 +28,7 @@ function App() {
   const [localFavoriteIds, setLocalFavoriteIds] = useState([]); // to store favorite products locally for instant UI changes
   const [localCartItems, setLocalCartItems] = useState({}); // to store cart items locally for instant UI changes
   const [cartDetails, setCartDetails] = useState({}); // final cart details for placing order
+  const [searchQuery, setSearchQuery] = useState("");
   const userId = "6891b0f229130a83422d47db";
   const API = "https://aura-living-backend.vercel.app";
 
@@ -44,6 +45,8 @@ function App() {
         setLocalFavoriteIds,
         setLocalCartItems,
         setCartDetails,
+        searchQuery,
+        setSearchQuery,
         priceUpperLimit,
         selectedCategories,
         minimumRating,
