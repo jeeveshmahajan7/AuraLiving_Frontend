@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { BiTrash } from "react-icons/bi";
+import { toast } from "react-toastify";
 
 import ProductsContext from "../contexts/ProductsContext";
 import { useContext, useState, useEffect } from "react";
@@ -49,11 +50,11 @@ const SelectAddress = () => {
       });
 
       if (!res.ok) {
-        alert("Address Deletion Unsuccessfull! ❌");
+        toast.error("Address Deletion Unsuccessfull ❌");
         return;
       } else {
         setAddresses((prev) => prev.filter((addr) => addr._id !== addressId));
-        alert("Address Deleted Successfully.");
+        toast.success("Address Deleted Successfully ✅");
       }
     } catch (error) {
       console.log("Error deleting address:", error.message);
@@ -82,7 +83,7 @@ const SelectAddress = () => {
       });
 
       if (!res.ok) {
-        alert("Failed to add address. ❌");
+        toast.error("Failed to add address ❌");
         return;
       }
 
@@ -99,9 +100,9 @@ const SelectAddress = () => {
         }
         return [...prev, newAddressFromDB];
       });
-      alert("Address added successfully! ✅");
+      toast.success("Address added successfully! ✅");
     } catch (error) {
-      alert("Failed to save address:", error.message);
+      toast.error("Failed to add address ❌");
     }
   };
 
@@ -115,7 +116,7 @@ const SelectAddress = () => {
       );
 
       if (!res.ok) {
-        alert("Failed to update default address.❌");
+        toast.error("Failed to update default address ❌");
         return;
       }
 
@@ -127,9 +128,9 @@ const SelectAddress = () => {
         }))
       );
 
-      alert("Default address updated!✅");
+      toast.success("Default address updated ✅");
     } catch (error) {
-      console.log("Error setting default address:", error.message);
+       toast.error("Error updating default address ❌");
     }
   };
 
@@ -170,7 +171,7 @@ const SelectAddress = () => {
       );
 
       if (!res.ok) {
-        alert("Failed to update address ❌");
+        toast.error("Failed to update address ❌");
         return;
       }
 
@@ -188,13 +189,13 @@ const SelectAddress = () => {
         })
       );
 
-      alert("Address updated successfully! ✅");
+      toast.success("Address updated successfully! ✅");
 
       // reset modal state
       closeForm();
       setEditingAddressId(null);
     } catch (error) {
-      console.log("Error updating address:", error.message);
+      toast.error("Error updating address ❌");
     }
   };
 

@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import ProductsContext from "../contexts/ProductsContext";
 import useFetch from "../../useFetch";
@@ -8,7 +9,7 @@ const CheckoutPage = () => {
   const { API, userId, cartDetails } = useContext(ProductsContext);
   const { data, loading, error } = useFetch(`${API}/users/${userId}/details`);
   const navigate = useNavigate();
-  
+
   const defaultAddress = data?.userDetails?.address?.find(
     (addr) => addr.isDefault
   );
@@ -41,10 +42,10 @@ const CheckoutPage = () => {
       const result = await res.json();
 
       if (res.ok) {
-        alert("✅ Order placed successfully!");
+        toast.success("Order placed successfully ✅");
         navigate("/cart");
       } else {
-        alert("❌ Failed: " + result.message);
+        toast.error("Failed to place the order ❌");
       }
     } catch (error) {
       console.log(
@@ -57,7 +58,7 @@ const CheckoutPage = () => {
   if (error) return <p>An error occured.</p>;
 
   if (loading) {
-    return <p>Loading Cart Details...</p>;
+    return <p className="container loading-custom"> Loading Cart Details...</p>;
   }
 
   return (
@@ -71,10 +72,7 @@ const CheckoutPage = () => {
                 <h5>Delivering to {defaultAddress?.name}</h5>
               </div>
               <div className="col-sm-6 text-end">
-                <Link
-                  to="/address"
-                  className="btn btn-second-custom"
-                >
+                <Link to="/address" className="btn btn-second-custom">
                   Change
                 </Link>
               </div>
