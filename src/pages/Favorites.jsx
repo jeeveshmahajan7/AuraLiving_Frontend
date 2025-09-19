@@ -77,11 +77,11 @@ const Favorites = () => {
             <h6>{product.title}</h6>
             <p>₹ {product.price}</p>
             <button
-              onClick={(e) => {
+              onClickCapture={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 addToCart(product._id);
-                toast.success("Product added to Cart");
+                toast.success("Product added to Cart", { autoClose: 2000 });
               }}
               className="btn btn-custom w-50"
               disabled={loadingItems[product._id]}
