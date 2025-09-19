@@ -8,9 +8,9 @@ const AccountLayout = () => {
       <main className="container">
         <h1 className="display-6 py-5">User Details</h1>
 
-        <div className="row pb-5">
+        <div className="row">
           <div className="col-md-3">
-            <ul className="list-group">
+            <ul className="list-group mb-5">
               <Link
                 to="profile"
                 className={`list-group-item ${
