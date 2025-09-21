@@ -2,11 +2,11 @@ import { Link } from "react-router-dom";
 import { AiFillHeart, AiOutlineShoppingCart } from "react-icons/ai";
 import { FaUserAlt } from "react-icons/fa";
 import { useLocation, matchPath } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import ProductsContext from "../contexts/ProductsContext";
 
 const Header = () => {
-  const { searchQuery, setSearchQuery, localCartItems } =
+  const { searchQuery, setSearchQuery, localCartItems, localFavoriteIds } =
     useContext(ProductsContext);
 
   const cartSize = Object.values(localCartItems).reduce(
@@ -75,7 +75,7 @@ const Header = () => {
               </li>
               <li className="nav-item mx-md-2">
                 <Link to="/cart" className="nav-link">
-                  <AiOutlineShoppingCart color="black" size={20} /> Cart (
+                  <AiOutlineShoppingCart color="black" size={20} /> Cart(
                   <span>{cartSize}</span>)
                 </Link>
               </li>

@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Navigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
@@ -31,6 +31,21 @@ function App() {
   const [searchQuery, setSearchQuery] = useState("");
   const userId = "6891b0f229130a83422d47db";
   const API = "https://aura-living-backend.vercel.app";
+
+  useEffect(() => {
+    fetch(`${API}/users/${userId}/cart`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.cart) {
+          const mapped = {};
+          data.cart.forEach((item) => {
+            mapped[item.product._id] = item.quantity;
+          });
+          setLocalCartItems(mapped);
+        }
+      })
+      .catch((err) => console.log("Error fetching cart:", err));
+  }, [API, userId]);
 
   return (
     <ProductsContext.Provider
