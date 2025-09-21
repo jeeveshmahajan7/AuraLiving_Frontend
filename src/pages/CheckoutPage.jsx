@@ -39,8 +39,6 @@ const CheckoutPage = () => {
         }),
       });
 
-      const result = await res.json();
-
       if (res.ok) {
         toast.success("Order placed successfully");
         navigate("/cart");
