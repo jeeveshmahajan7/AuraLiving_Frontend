@@ -127,7 +127,7 @@ const ProductsList = () => {
                   addToCart(product._id);
                   toast.success("Product added to Cart");
                 }}
-                className="btn btn-custom w-50"
+                className="btn btn-custom w-100"
                 disabled={loadingItems[product._id]} // ⬅️ disable while loading
               >
                 {loadingItems[product._id] ? (
