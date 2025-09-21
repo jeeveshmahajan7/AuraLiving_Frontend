@@ -14,6 +14,10 @@ const Header = () => {
     0
   );
 
+  const favoriteCount = Array.isArray(localFavoriteIds)
+    ? localFavoriteIds.length
+    : 0;
+
   const loaction = useLocation();
   const isInsideProductListingPage =
     matchPath("/products", loaction.pathname) ||
@@ -70,7 +74,8 @@ const Header = () => {
               </li>
               <li className="nav-item mx-md-2">
                 <Link to="/favorites" className="nav-link">
-                  <AiFillHeart color="red" size={20} /> Favorites
+                  <AiFillHeart color="red" size={20} /> Favorites(
+                  <span>{favoriteCount}</span>)
                 </Link>
               </li>
               <li className="nav-item mx-md-2">

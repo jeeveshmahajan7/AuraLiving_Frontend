@@ -18,6 +18,7 @@ import Orders from "./pages/Orders";
 import SelectAddress from "./pages/SelectAddress";
 import AccountLayout from "./pages/AccountLayout";
 import Profile from "./components/Profile";
+import useFetch from "../useFetch";
 
 function App() {
   const [priceUpperLimit, setPriceUpperLimit] = useState(10000);
@@ -42,6 +43,16 @@ function App() {
             mapped[item.product._id] = item.quantity;
           });
           setLocalCartItems(mapped);
+        }
+      })
+      .catch((err) => console.log("Error fetching cart:", err));
+
+    fetch(`${API}/users/${userId}/favorites`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.favoriteProducts) {
+          const idsArray = data.favoriteProducts.map((item) => item._id);
+          setLocalFavoriteIds(idsArray);
         }
       })
       .catch((err) => console.log("Error fetching cart:", err));
