@@ -180,7 +180,7 @@ const Cart = () => {
                       toggleFavorite(item.product._id);
                       toast.success("Moved to favorites");
                     }}
-                    className="btn btn-second-custom w-100"
+                    className="btn btn-second-custom mt-3 w-100"
                   >
                     Move to Favorites
                   </button>
