@@ -83,7 +83,7 @@ const Favorites = () => {
                 addToCart(product._id);
                 toast.success("Product added to Cart", { autoClose: 2000 });
               }}
-              className="btn btn-custom w-50"
+              className="btn btn-custom w-100"
               disabled={loadingItems[product._id]}
             >
               {loadingItems[product._id] ? (
