@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import ProductsContext from "../contexts/ProductsContext";
@@ -69,7 +69,12 @@ const CheckoutPage = () => {
           <div className="card-body">
             <div className="row align-items-center">
               <div className="col-sm-6">
-                <h5>Delivering to {defaultAddress?.name}</h5>
+                {defaultAddress && (
+                  <h5>Delivering to {defaultAddress?.name}</h5>
+                )}
+                {!defaultAddress && (
+                  <p>Please select a default address to deliver the order.</p>
+                )}
               </div>
               <div className="col-sm-6 text-end">
                 <Link to="/address" className="btn btn-second-custom">
@@ -77,11 +82,16 @@ const CheckoutPage = () => {
                 </Link>
               </div>
             </div>
-            <p>
-              {defaultAddress?.street}, {defaultAddress?.city},{" "}
-              {defaultAddress?.state}
-            </p>
-            <p>Contact number: {defaultAddress?.phone}</p>
+
+            {defaultAddress && (
+              <p>
+                {defaultAddress?.street}, {defaultAddress?.city},{" "}
+                {defaultAddress?.state}
+              </p>
+            )}
+
+            {defaultAddress && <p>Contact number: {defaultAddress?.phone}</p>}
+
             <hr />
             <p>Price: ₹{cartDetails.totalCartPrice}</p>
             <p>Delivery Charges: ₹{cartDetails.deliveryCarges}</p>
@@ -89,7 +99,11 @@ const CheckoutPage = () => {
             <p className="fw-bold">
               FINAL AMOUNT: ₹{cartDetails.finalOrderAmount}
             </p>
-            <button className="btn btn-custom" onClick={placeOrder}>
+            <button
+              className="btn btn-custom"
+              onClick={placeOrder}
+              disabled={!defaultAddress}
+            >
               Place Order
             </button>
           </div>
