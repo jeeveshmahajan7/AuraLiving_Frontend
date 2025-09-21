@@ -36,6 +36,7 @@ const CheckoutPage = () => {
             zip: defaultAddress?.zip,
             phone: defaultAddress?.phoneNumber,
           },
+          status: "Shipped",
         }),
       });
 
