@@ -6,7 +6,13 @@ import { useContext } from "react";
 import ProductsContext from "../contexts/ProductsContext";
 
 const Header = () => {
-  const { searchQuery, setSearchQuery } = useContext(ProductsContext);
+  const { searchQuery, setSearchQuery, localCartItems } =
+    useContext(ProductsContext);
+
+  const cartSize = Object.values(localCartItems).reduce(
+    (sum, qty) => sum + qty,
+    0
+  );
 
   const loaction = useLocation();
   const isInsideProductListingPage =
@@ -69,7 +75,8 @@ const Header = () => {
               </li>
               <li className="nav-item mx-md-2">
                 <Link to="/cart" className="nav-link">
-                  <AiOutlineShoppingCart color="black" size={20} /> Cart
+                  <AiOutlineShoppingCart color="black" size={20} /> Cart (
+                  <span>{cartSize}</span>)
                 </Link>
               </li>
             </ul>
