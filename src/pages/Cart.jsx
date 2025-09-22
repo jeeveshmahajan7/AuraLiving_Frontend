@@ -103,20 +103,20 @@ const Cart = () => {
         >
           <div className="card card-products">
             <div className="row g-0">
-              <div className="col-md-4">
+              <div className="col-4">
                 <img
                   className="img-fluid rounded-start card-img object-fit-cover"
                   src={`${item.product.imgUrl}`}
                   alt={`${item.product.title} image.`}
                 />
               </div>
-              <div className="col-md-8">
+              <div className="col-8">
                 <div className="card-body">
                   <div className="row">
-                    <div className="col-md-6">
+                    <div className="col-6">
                       <h6>{item.product.title}</h6>
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-6">
                       <button
                         onClick={async (e) => {
                           e.preventDefault();
@@ -197,10 +197,10 @@ const Cart = () => {
     <>
       <main className="container">
         <div className="row">
-          <div className="col-md-6">
+          <div className="col-6">
             <h1 className="display-6 py-5">My Cart</h1>
           </div>
-          <div className="col-md-6">
+          <div className="col-6">
             <Link
               to={"/orders"}
               className="btn btn-second-custom my-5 float-end"
