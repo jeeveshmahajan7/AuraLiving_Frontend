@@ -241,11 +241,11 @@ const SelectAddress = () => {
           <ul className={`list-group ${isInsideAccount ? "mb-5" : ""}`}>
             {addresses.map((addr) => (
               <li key={addr._id || index} className="list-group-item">
-                <div className="row">
-                  <div className="col-md-8">
-                    <p>{addr.name}</p>
+                <div className="row d-flex align-items-center mb-2">
+                  <div className="col-8">
+                    <p className="mb-0">{addr.name}</p>
                   </div>
-                  <div className="col-md-4 d-flex justify-content-end">
+                  <div className="col-4 d-flex justify-content-end">
                     <button className="btn btn-second-custom">
                       <BiTrash
                         onClick={(e) => {
