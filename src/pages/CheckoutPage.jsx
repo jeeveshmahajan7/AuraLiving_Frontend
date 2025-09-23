@@ -67,7 +67,7 @@ const CheckoutPage = () => {
         <div className="card">
           <div className="card-body">
             <div className="row align-items-center">
-              <div className="col-sm-6">
+              <div className="col-sm-6 order-2 order-sm-1">
                 {defaultAddress && (
                   <h5>Delivering to {defaultAddress?.name}</h5>
                 )}
@@ -75,7 +75,7 @@ const CheckoutPage = () => {
                   <p>Please select a default address to deliver the order.</p>
                 )}
               </div>
-              <div className="col-sm-6 text-end">
+              <div className="mb-3 mb-sm-1 col-sm-6 order-1 order-sm-2 text-start text-sm-end">
                 <Link to="/address" className="btn btn-second-custom">
                   Change
                 </Link>
