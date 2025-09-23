@@ -83,7 +83,7 @@ const ProductsListing = () => {
               {/* to show products count on small screens */}
               Showing {filteredProductsLength} products.
             </div>
-            <div className="row">{<ProductsList />}</div>
+            <div className="row justify-content-center">{<ProductsList />}</div>
           </div>
         </div>
       </main>
